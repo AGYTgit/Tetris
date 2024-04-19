@@ -5,11 +5,6 @@ import random
 import block
 
 
-# Define constants for the key presses
-DOWN_KEY = pygame.K_DOWN
-LEFT_KEY = pygame.K_LEFT
-RIGHT_KEY = pygame.K_RIGHT
-
 pygame.init()
 window_width = 800
 window_height = 600
@@ -70,9 +65,6 @@ active_piece = block.I(spawn_area_x, spawn_area_y)
 
 # Game loop
 running = True
-y = 0
-move_delay = 0  # Initialize move delay counter
-move_speed = 30  # Adjust this value to control the speed of horizontal movement
 while running:
     for event in pygame.event.get():
         if event.type == QUIT:
