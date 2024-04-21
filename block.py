@@ -18,6 +18,9 @@ class I:
 
 
 class O:
+    pos_x = 0
+    pos_y = 0
+    pos_y_old = 0
     shape = [
         [1,1],
         [1,1]
@@ -29,8 +32,15 @@ class O:
         self.pos_x = pos_x
         self.pos_y = pos_y
 
+    def increment_y_by(self, value):
+        self.pos_y_old = self.pos_y
+        self.pos_y += value
+
 
 class Z:
+    pos_x = 0
+    pos_y = 0
+    pos_y_old = 0
     shape = [
         [1,1,0],
         [0,1,1]
@@ -41,3 +51,7 @@ class Z:
     def __init__(self, pos_x, pos_y):
         self.pos_x = pos_x
         self.pos_y = pos_y
+
+    def increment_y_by(self, value):
+        self.pos_y_old = self.pos_y
+        self.pos_y += value
