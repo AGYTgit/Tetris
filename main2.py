@@ -65,8 +65,11 @@ red_button = button.Button(pygame, window, 10,10,50,50, (150,0,0), "red")
 green_button = button.Button(pygame, window, 10,70,50,50, (0,150,0), "green")
 blue_button = button.Button(pygame, window, 10,130,50,50, (0,0,150), "blue")
 
-left_button = button.Button(pygame, window, 10,190,50,50, (100,100,100), "<")
-right_button = button.Button(pygame, window, 70,190,50,50, (100,100,100), ">")
+left_button = button.Button(pygame, window, 10,250,50,50, (100,100,100), "<")
+right_button = button.Button(pygame, window, 70,250,50,50, (100,100,100), ">")
+
+rotate_clockwise_button = button.Button(pygame, window, 10,190,50,50, (100,100,100), "<")
+rotate_counterclockwise_button = button.Button(pygame, window, 70,190,50,50, (100,100,100), ">")
 
 
 """draw everything"""
@@ -81,6 +84,9 @@ def draw():
 
     left_button.draw()
     right_button.draw()
+
+    rotate_clockwise_button.draw()
+    rotate_counterclockwise_button.draw()
     
     """game board"""
     draw_board()
@@ -111,20 +117,15 @@ while running:
                     print(e)
 
 
-    # rotate block
     if red_button.pressed():
         print("Red")
-        try:
-            first_block.rotate(board_matrix)
-        except Exception as e:
-            print(e)
 
     # init block
     elif green_button.pressed():
         print("green")
 
         """init block"""
-        first_block = block2.Block('I', 3, 0)
+        first_block = block2.Block('Z', 3, 0)
 
         """add block to board_matrix"""
         first_block.add_to_board_matrix(board_matrix)
@@ -140,18 +141,34 @@ while running:
         print("left")
         try:
             first_block.move(board_matrix, 'LEFT')
+            print(first_block.pos_x)
         except Exception as e:
             print(e)
-        print(first_block.pos_x)
 
     # move block right
     elif right_button.pressed():
         print("right")
         try:
             first_block.move(board_matrix, 'RIGHT')
+            print(first_block.pos_x)
         except Exception as e:
             print(e)
-        print(first_block.pos_x)
+
+    # rotate block CW
+    elif rotate_clockwise_button.pressed():
+        print("clockwise")
+        try:
+            first_block.rotate(board_matrix, "CW")
+        except Exception as e:
+            print(e)
+
+    # rotate block CCW
+    elif rotate_counterclockwise_button.pressed():
+        print("counterclockwise")
+        try:
+            first_block.rotate(board_matrix, "CCW")
+        except Exception as e:
+            print(e)
 
 
     draw_board()
