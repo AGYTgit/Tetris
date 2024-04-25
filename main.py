@@ -54,7 +54,6 @@ up_button = button.Button(pygame, window, 70,250,50,50, (100,100,100), "^")
 down_button = button.Button(pygame, window, 70,310,50,50, (100,100,100), "⌄")
 
 
-
 """draw everything"""
 def draw():
     """border around game board"""

@@ -49,7 +49,9 @@ class Block:
                         self.pos_x += offset[0]
 
                         """add block to board_matrix"""
+                        print('a')
                         self.add_block_to_board_matrix(board_matrix)
+                        print('a')
                         break
             else:
                   """update shape's rotation"""
@@ -111,8 +113,8 @@ class Block:
                         if self.shape[i][j] == 0:
                               continue
                         """chekc if piece is inside the board"""
-                        if  0 <= self.pos_y + self.offset[1] + i + wall_kick_offset[1] <= 19 and \
-                              0 <= self.pos_x + self.offset[0] + j + wall_kick_offset[0] <= 9:
+                        if  0 <= self.pos_y + self.offset[1] + i + wall_kick_offset[1] <= len(board_matrix) - 1 and \
+                              0 <= self.pos_x + self.offset[0] + j + wall_kick_offset[0] <= len(board_matrix[i]) - 1:
                               """check for collision"""
                               if board_matrix[self.pos_y + self.offset[1] + i + wall_kick_offset[1]][self.pos_x + self.offset[0] + j + wall_kick_offset[0]][1] == 'B':
                                     continue
