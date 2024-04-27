@@ -1,3 +1,7 @@
+"""block code list"""
+block_codes = ['I', 'J', 'L', 'O', 'S', 'T', 'Z']
+
+
 """color definitions for each piece (mainly for use in board_matrix)"""
 color = {
       'I': (0,255,255),

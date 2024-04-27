@@ -1,7 +1,10 @@
+import random
+
 import block_codes
 
+
 class Block:
-      def __init__(self, block_code, pos_x, pos_y, rotation=0):
+      def __init__(self, block_code, pos_x, pos_y=0, rotation=0):
             """get block code"""
             self.block_code = block_code
 
@@ -13,14 +16,12 @@ class Block:
             self.rotation = rotation
 
             """get color and shape"""
-            self.color = block_codes.color[block_code]
             self.shape = block_codes.shape[block_code][rotation]
             self.offset = block_codes.offset[block_code][rotation]
             if self.block_code == 'I':
                   self.wall_kick_offset = block_codes.wall_kick_offset['I']
             else:
                   self.wall_kick_offset = block_codes.wall_kick_offset['other']
-
 
       def safe_rotate(self, board_matrix, direction="CW"):
             """remove block from board_matrix and store updated board_matrix"""
@@ -40,7 +41,6 @@ class Block:
                   """check if position is valid"""
                   validation, offset = self.validate_position(board_matrix, wall_kick_offset)
                   if validation == True:
-                        print(offset)
                         """set new rotation"""
                         self.rotate(direction)
 
@@ -49,9 +49,7 @@ class Block:
                         self.pos_x += offset[0]
 
                         """add block to board_matrix"""
-                        print('a')
                         self.add_block_to_board_matrix(board_matrix)
-                        print('a')
                         break
             else:
                   """update shape's rotation"""
@@ -61,7 +59,6 @@ class Block:
                   """add block to board_matrix"""
                   self.add_block_to_board_matrix(board_matrix)
             
-
       def safe_move(self, board_matrix, direction='DOWN'):
             """remove block from board_matrix and store updated board_matrix"""
             self.remove_block_from_board_matrix(board_matrix)
@@ -80,7 +77,6 @@ class Block:
                   """add block to board_matrix"""
                   self.add_block_to_board_matrix(board_matrix)
       
-      
       def remove_block_from_board_matrix(self, board_matrix):
             """remove block from board_matrix"""
             for i in range(len(self.shape)):
@@ -92,7 +88,6 @@ class Block:
                         board_matrix[i + self.pos_y + self.offset[1]][j + self.pos_x + self.offset[0]][1] = 'B'
             return board_matrix
 
-
       def add_block_to_board_matrix(self, board_matrix):
             """add block to board_matrix"""
             for i in range(len(self.shape)):
@@ -103,7 +98,6 @@ class Block:
                         """add block part"""
                         board_matrix[i + self.pos_y + self.offset[1]][j + self.pos_x + self.offset[0]][1] = self.block_code
             return board_matrix
-
 
       def validate_position(self, board_matrix, wall_kick_offset=[0,0]):
             """check if new position is valid"""
@@ -122,7 +116,6 @@ class Block:
             else:
                   return True, wall_kick_offset
       
-
       def move(self, board_matrix, direction, reverse=False):
             """move block"""
             if not reverse:
@@ -144,7 +137,6 @@ class Block:
                   elif direction == "UP" and self.pos_y < len(board_matrix) - 1 - self.offset[1]:
                         self.pos_y += 1
 
-
       def rotate(self, direction, reverse=False):
             """set new rotation"""
             if direction == "CW":
@@ -160,7 +152,6 @@ class Block:
             else:
                   raise ValueError("Invalid direction argument for safe_rotate()")
       
-
       def update_codes(self, color=False, shape=False, offset=False, wall_kick_offset=False):
             """update block's color, shape, offset and wall-kick offset"""
             if color:
@@ -174,3 +165,28 @@ class Block:
                         self.wall_kick_offset = block_codes.wall_kick_offset['I']
                   else:
                         self.wall_kick_offset = block_codes.wall_kick_offset['other']
+
+
+class Block_List:
+      def __init__(self, main_board, future_blocks):
+            self.board = main_board
+
+            """create list of blocks"""
+            self.future_blocks = future_blocks
+            self.block_code_list = [block_codes.block_codes[random.randint(0, len(block_codes.block_codes) - 1)] for _ in range(future_blocks)]
+            self.block_list = [Block(self.block_code_list[i], (self.board.board_width - len(block_codes.shape[self.block_code_list[i]][0][0])) // 2) for i in range(future_blocks)]
+
+      """get next block from the block_list[]"""
+      def get_next_block(self):
+            """get active block"""
+            active_block = self.block_list[0]
+
+            """move blocks to the left of the list"""
+            for i in range(self.future_blocks - 1):
+                  self.block_list[i] = self.block_list[i + 1]
+
+            """add a new block at the end"""
+            random_block_code = block_codes.block_codes[random.randint(0, len(block_codes.block_codes) - 1)]
+            self.block_list[self.future_blocks - 1] = Block(random_block_code, (self.board.board_width - len(block_codes.shape[random_block_code][0][0])) // 2)
+
+            return active_block
