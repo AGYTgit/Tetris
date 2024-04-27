@@ -19,7 +19,9 @@ pygame.time.set_timer(TICK_EVENT, 10)
 tick = 0
 
 """init main_board"""
-main_board = board.Board(window, window_width, window_height, centered=True)
+main_board = board.Board(window, window_width, window_height)
+
+"""create block_list"""
 block_list = block.Block_List(main_board, 5)
 
 """init buttons"""
@@ -28,7 +30,9 @@ green_button = button.Button(window, 10,70,50,50, (0,150,0), "green")
 blue_button = button.Button(window, 10,130,50,50, (0,0,150), "blue")
 
 rotate_clockwise_button = button.Button(window, 10,190,50,50, (100,100,100), "<")
-rotate_counterclockwise_button = button.Button(window, 70,190,50,50, (100,100,100), ">")
+rotate_counterclockwise_button = button.Button(window, 130,190,50,50, (100,100,100), ">")
+
+drop_button = button.Button(window, 70,190,50,50, (100,100,100), "V")
 
 left_button = button.Button(window, 10,280,50,50, (100,100,100), "<")
 right_button = button.Button(window, 130,280,50,50, (100,100,100), ">")
@@ -47,6 +51,8 @@ def draw():
     
     rotate_clockwise_button.draw()
     rotate_counterclockwise_button.draw()
+
+    drop_button.draw()
 
     left_button.draw()
     right_button.draw()
@@ -69,7 +75,6 @@ while running:
 
             """get called on each 100th tick (1 second)"""
             if tick % 25 == 0:
-                pass
                 try:
                     active_block.safe_move(main_board.board_matrix, 'DOWN')
                 except Exception as e:
@@ -78,11 +83,7 @@ while running:
 
 
     if red_button.pressed():
-        active_block = block_list.get_next_block()
-        main_board.clear_completed_lines()
-
-        """add block to main_board.board_matrix"""
-        active_block.add_block_to_board_matrix(main_board.board_matrix)
+        pass
 
     elif green_button.pressed():
         pass
@@ -107,6 +108,19 @@ while running:
         except Exception as e:
             print(e)
             
+    # drop block
+    elif drop_button.pressed():
+        try:
+            active_block.drop(main_board.board_matrix, main_board.board_height)
+
+            active_block = block_list.get_next_block()
+            main_board.clear_completed_lines()
+
+            """add block to main_board.board_matrix"""
+            active_block.add_block_to_board_matrix(main_board.board_matrix)
+        except Exception as e:
+            print(e)
+
     # move block left
     elif left_button.pressed():
         try:

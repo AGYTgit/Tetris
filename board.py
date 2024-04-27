@@ -3,7 +3,7 @@ import block_codes
 
 
 class Board:
-    def __init__(self, window, window_width, window_height, centered=False, board_x_pos=0, board_y_pos=0, board_width=10, board_height=20, grid_size=30, border_thickness=50):
+    def __init__(self, window, window_width, window_height, centered=True, board_x_pos=0, board_y_pos=0, board_width=10, board_height=20, grid_size=30, border_thickness=50):
         self.window = window
 
         self.window_width = window_width
@@ -44,11 +44,22 @@ class Board:
 
     """clear a line if it is completed"""
     def clear_completed_lines(self):
-        """check if a line is completed and remove it if it is"""
         for i in range(self.board_height):
             for j in range(self.board_width):
-                    if self.board_matrix[i][j][1] == 'B':
-                        break
+                if self.board_matrix[i][j][1] == 'B':
+                    break
             else:
-                    for j in range(self.board_width):
-                        self.board_matrix[i][j][1] = 'B'
+                for j in range(self.board_width):
+                    self.board_matrix[i][j][1] = 'B'
+
+                self.move_lines(i)
+
+
+    def move_lines(self, height):
+        if height > 0:
+            for j in range(self.board_width):
+                self.board_matrix[height][j][1] = self.board_matrix[height - 1][j][1]
+            for j in range(self.board_width):
+                if self.board_matrix[height][j][1] != 'B':
+                    self.move_lines(height - 1)
+                    break

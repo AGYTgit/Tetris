@@ -76,7 +76,16 @@ class Block:
            
                   """add block to board_matrix"""
                   self.add_block_to_board_matrix(board_matrix)
+
+                  return False
       
+      def drop(self, board_matrix, board_height):
+            for _ in range(board_height):
+                  decision = self.safe_move(board_matrix, 'DOWN')
+
+                  if decision is False:
+                        break
+            
       def remove_block_from_board_matrix(self, board_matrix):
             """remove block from board_matrix"""
             for i in range(len(self.shape)):
