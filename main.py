@@ -112,14 +112,14 @@ while running:
     elif drop_button.pressed():
         try:
             active_block.drop(main_board.board_matrix, main_board.board_height)
-
-            active_block = block_list.get_next_block()
-            main_board.clear_completed_lines()
-
-            """add block to main_board.board_matrix"""
-            active_block.add_block_to_board_matrix(main_board.board_matrix)
         except Exception as e:
             print(e)
+
+        active_block = block_list.get_next_block()
+        main_board.clear_completed_lines()
+
+        """add block to main_board.board_matrix"""
+        active_block.add_block_to_board_matrix(main_board.board_matrix)
 
     # move block left
     elif left_button.pressed():
