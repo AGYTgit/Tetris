@@ -21,6 +21,8 @@ tick = 0
 """init main_board"""
 main_board = board.Board(window, window_width, window_height)
 
+side_board = board.Side_Board(window, 600, 0, 120, 450)
+
 """create block_list"""
 block_list = block.Block_List(main_board, 5)
 
@@ -38,6 +40,8 @@ left_button = button.Button(window, 10,280,50,50, (100,100,100), "<")
 right_button = button.Button(window, 130,280,50,50, (100,100,100), ">")
 up_button = button.Button(window, 70,250,50,50, (100,100,100), "^")
 down_button = button.Button(window, 70,310,50,50, (100,100,100), "v")
+
+hold_button = button.Button(window, 10,370,50,50, (100,100,100), "v")
 
 """draw everything"""
 def draw():
@@ -59,8 +63,12 @@ def draw():
     up_button.draw()
     down_button.draw()
 
+    hold_button.draw()
+
     """game board"""
     main_board.draw_board()
+
+hold_block = None
 
 draw()
 pygame.display.update()
@@ -121,6 +129,13 @@ while running:
         """add block to main_board.board_matrix"""
         active_block.add_block_to_board_matrix(main_board.board_matrix)
 
+        try:
+            side_board.draw('B', 0)
+            for i in range(len(block_list.block_list)):
+                side_board.draw(block_list.block_list[i].block_code, i)
+        except Exception as e:
+            print(e)
+
     # move block left
     elif left_button.pressed():
         try:
@@ -149,6 +164,22 @@ while running:
         except Exception as e:
             print(e)
 
+    # hold block
+    elif hold_button.pressed():
+        try:
+            active_block.remove_block_from_board_matrix(main_board.board_matrix)
+            
+            if hold_block is None:
+                hold_block = block.Block(active_block.block_code, (main_board.board_width - len(active_block.shape[0])) // 2)
+                active_block = block_list.get_next_block()
+            else:
+                placeholder = block.Block(hold_block.block_code, (main_board.board_width - len(hold_block.shape[0])) // 2)
+                hold_block = block.Block(active_block.block_code, (main_board.board_width - len(active_block.shape[0])) // 2)
+                active_block = placeholder
+
+            active_block.add_block_to_board_matrix(main_board.board_matrix)
+        except Exception as e:
+            print(e)
 
     main_board.draw_board()
     pygame.display.update()

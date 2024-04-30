@@ -28,7 +28,6 @@ class Board:
         """2D list of cells on the board"""
         self.board_matrix = [[['X','B'] for _ in range(board_width)] for _ in range(board_height)]
 
-
     """draw game board and update board_matrix"""
     def draw_board(self, force=False):
         for i in range(self.board_height):
@@ -63,3 +62,33 @@ class Board:
                 if self.board_matrix[height][j][1] != 'B':
                     self.move_lines(height - 1)
                     break
+
+
+class Side_Board:
+    def __init__(self, window, board_x_pos, board_y_pos, board_width, board_height, grid_size=30, border_thickness=50):
+        self.window = window
+
+        """board dimensions"""
+        self.board_width = board_width
+        self.board_height = board_height
+        self.grid_size = grid_size
+
+        self.border_thickness = border_thickness
+
+        """board position"""
+        self.board_x_pos = board_x_pos
+        self.board_y_pos = board_y_pos
+
+
+    def draw(self, block_code, pos):
+        if block_code not in block_codes.block_codes:
+            pygame.draw.rect(self.window, (50,50,50), (self.board_x_pos, self.board_y_pos, self.board_width, self.board_height))
+            return
+
+        shape = block_codes.shape[block_code][0]
+        for i in range(len(shape)):
+            for j in range(len(shape[i])):
+                if shape[i][j] == 0:
+                    continue
+                pygame.draw.rect(self.window, block_codes.color[block_code], (self.board_x_pos + j * self.grid_size, self.board_y_pos + i * self.grid_size + pos * self.grid_size * 3, self.grid_size, self.grid_size))
+
