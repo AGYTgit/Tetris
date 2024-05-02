@@ -36,6 +36,9 @@ class Board:
                     if self.board_matrix[i][j][1] == 'B':
                         pygame.draw.rect(self.window, (50,50,50), (self.board_x_pos + j * self.grid_size, self.board_y_pos + i * self.grid_size, self.grid_size, self.grid_size))
                         pygame.draw.rect(self.window, (30,30,30), (self.board_x_pos + 1 + j * self.grid_size, self.board_y_pos + 1 + i * self.grid_size, self.grid_size - 2, self.grid_size - 2))
+                    elif self.board_matrix[i][j][1] == 'D':
+                        pygame.draw.rect(self.window, (150,150,150), (self.board_x_pos + j * self.grid_size, self.board_y_pos + i * self.grid_size, self.grid_size, self.grid_size))
+                        pygame.draw.rect(self.window, (30,30,30), (self.board_x_pos + 1 + j * self.grid_size, self.board_y_pos + 1 + i * self.grid_size, self.grid_size - 2, self.grid_size - 2))
                     else:
                         pygame.draw.rect(self.window, block_codes.color[self.board_matrix[i][j][1]], (self.board_x_pos + j * self.grid_size, self.board_y_pos + i * self.grid_size, self.grid_size, self.grid_size))
                         
@@ -45,7 +48,7 @@ class Board:
     def clear_completed_lines(self):
         for i in range(self.board_height):
             for j in range(self.board_width):
-                if self.board_matrix[i][j][1] == 'B':
+                if self.board_matrix[i][j][1] in ['B', 'D']:
                     break
             else:
                 for j in range(self.board_width):
@@ -59,7 +62,7 @@ class Board:
             for j in range(self.board_width):
                 self.board_matrix[height][j][1] = self.board_matrix[height - 1][j][1]
             for j in range(self.board_width):
-                if self.board_matrix[height][j][1] != 'B':
+                if self.board_matrix[height][j][1] not in ['B', 'D']:
                     self.move_lines(height - 1)
                     break
 
@@ -80,7 +83,7 @@ class Side_Board:
         self.board_y_pos = board_y_pos
 
 
-    def draw(self, block_code, pos):
+    def draw_board(self, block_code, pos=0):
         if block_code not in block_codes.block_codes:
             pygame.draw.rect(self.window, (50,50,50), (self.board_x_pos, self.board_y_pos, self.board_width, self.board_height))
             return
@@ -91,4 +94,3 @@ class Side_Board:
                 if shape[i][j] == 0:
                     continue
                 pygame.draw.rect(self.window, block_codes.color[block_code], (self.board_x_pos + j * self.grid_size, self.board_y_pos + i * self.grid_size + pos * self.grid_size * 3, self.grid_size, self.grid_size))
-
