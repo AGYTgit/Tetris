@@ -93,7 +93,8 @@ while running:
 
 
     if red_button.pressed():
-        pass
+        active_block = block_list.get_next_block()
+        active_block.add_block_to_board_matrix(main_board.board_matrix)
 
     elif green_button.pressed():
         pass
@@ -130,9 +131,6 @@ while running:
 
         """add block to main_board.board_matrix"""
         active_block.add_block_to_board_matrix(main_board.board_matrix)
-
-        # """add block's telegraph"""
-        # active_block.add_block_to_board_matrix(main_board.board_matrix, 'D', active_block.get_telegraph_y_pos(main_board.board_matrix))
 
         try:
             side_board.draw_board('B', 0)
@@ -173,10 +171,6 @@ while running:
     elif hold_button.pressed():
         try:
             active_block.remove_block_from_board_matrix(main_board.board_matrix)
-
-            """remove block's telegraph"""
-            active_block.remove_block_from_board_matrix(main_board.board_matrix, active_block.get_telegraph_y_pos(main_board.board_matrix))
-
             
             if hold_block is None:
                 hold_block = block.Block(active_block.block_code, (main_board.board_width - len(active_block.shape[0])) // 2)
@@ -190,9 +184,6 @@ while running:
             hold_board.draw_board(hold_block.block_code)
 
             active_block.add_block_to_board_matrix(main_board.board_matrix)
-
-            # """add block's telegraph"""
-            # active_block.add_block_to_board_matrix(main_board.board_matrix, 'D', active_block.get_telegraph_y_pos(main_board.board_matrix))
 
         except Exception as e:
             print(e)

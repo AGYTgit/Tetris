@@ -27,11 +27,6 @@ class Block:
             """remove block from board_matrix and store updated board_matrix"""
             board_matrix = self.remove_block_from_board_matrix(board_matrix)
 
-
-            """remove block's telegraph"""
-            board_matrix = self.remove_block_from_board_matrix(board_matrix, self.get_telegraph_y_pos(board_matrix))
-
-
             """set new rotation"""
             self.rotate(direction)
 
@@ -53,11 +48,6 @@ class Block:
                         self.pos_y += offset[1]
                         self.pos_x += offset[0]
 
-
-                        """add block's telegraph"""
-                        self.add_block_to_board_matrix(board_matrix, 'D', self.get_telegraph_y_pos(board_matrix))
-
-
                         """add block to board_matrix"""
                         board_matrix = self.add_block_to_board_matrix(board_matrix)
                         break
@@ -66,70 +56,38 @@ class Block:
                   self.shape = block_codes.shape[self.block_code][self.rotation]
                   self.offset = block_codes.offset[self.block_code][self.rotation]
 
-
-                  """add block's telegraph"""
-                  self.add_block_to_board_matrix(board_matrix, 'D', self.get_telegraph_y_pos(board_matrix))
-
-
                   """add block to board_matrix"""
                   board_matrix = self.add_block_to_board_matrix(board_matrix)
             
       def safe_move(self, board_matrix, direction='DOWN'):
             """remove block from board_matrix and store updated board_matrix"""
+
             self.remove_block_from_board_matrix(board_matrix)
-
-            """remove block's telegraph"""
-            board_matrix = self.remove_block_from_board_matrix(board_matrix, self.get_telegraph_y_pos(board_matrix))
-
 
             """move block"""
             self.move(board_matrix, direction)
 
             validation, _ = self.validate_position(board_matrix)
             if validation:
-
-                  """add block's telegraph"""
-                  self.add_block_to_board_matrix(board_matrix, 'D', self.get_telegraph_y_pos(board_matrix))
-
-
                   """add block to board_matrix"""
                   self.add_block_to_board_matrix(board_matrix)
             else:
                   """move back to old position"""
                   self.move(board_matrix, direction, reverse=True)
 
-
-                  """add block's telegraph"""
-                  self.add_block_to_board_matrix(board_matrix, 'D', self.get_telegraph_y_pos(board_matrix))
-
-           
                   """add block to board_matrix"""
                   self.add_block_to_board_matrix(board_matrix)
 
                   return False
       
       def drop(self, board_matrix):
-            # """get telegraph's y position"""
-            # telegraph_y_pos = self.get_telegraph_y_pos(board_matrix)
-
-            # """remove block's telegraph"""
-            # board_matrix = self.remove_block_from_board_matrix(board_matrix, telegraph_y_pos)
             for _ in range(len(board_matrix)):
                   decision = self.safe_move(board_matrix, 'DOWN')
 
                   if decision is False:
                         break
-            
-      def get_telegraph_y_pos(self, board_matrix):
-            for i in range(len(board_matrix)):
-                  decision, _ = self.validate_position(board_matrix, wall_kick_offset=[0,i])
 
-                  if decision is False:
-                        return self.pos_y + (i - 1)
-            else:
-                  return 0
-
-      def remove_block_from_board_matrix(self, board_matrix, pos_y=None):
+      def remove_block_from_board_matrix(self, board_matrix, use_telegraph: bool=True):
             """remove block from board_matrix"""
             for i in range(len(self.shape)):
                   for j in range(len(self.shape[i])):
@@ -137,14 +95,31 @@ class Block:
                         if self.shape[i][j] == 0:
                               continue
                         """remove block part"""
-                        if pos_y is None:
-                              board_matrix[i + self.pos_y + self.offset[1]][j + self.pos_x + self.offset[0]][1] = 'B'
-                        else:
-                              board_matrix[i + pos_y + self.offset[1]][j + self.pos_x + self.offset[0]][1] = 'B'
+                        board_matrix[i + self.pos_y + self.offset[1]][j + self.pos_x + self.offset[0]][1] = 'B'
+
+            """remove block from board_matrix"""
+            if use_telegraph:
+                  for i in range(len(self.shape)):
+                        for j in range(len(self.shape[i])):
+                              """filter out empty parts of the block"""
+                              if self.shape[i][j] == 0:
+                                    continue
+                              """remove block's telegraph part"""
+                              board_matrix[i + self.get_telegraph_y_pos(board_matrix) + self.offset[1]][j + self.pos_x + self.offset[0]][1] = 'B'
 
             return board_matrix
 
-      def add_block_to_board_matrix(self, board_matrix, block_code=None, pos_y=None):
+      def add_block_to_board_matrix(self, board_matrix, use_telegraph: bool=True):
+            """add block to board_matrix"""
+            if use_telegraph:
+                  for i in range(len(self.shape)):
+                        for j in range(len(self.shape[i])):
+                              """filter out empty parts of the block"""
+                              if self.shape[i][j] == 0:
+                                    continue
+                              """add block's telegraph"""
+                              board_matrix[i + self.get_telegraph_y_pos(board_matrix) + self.offset[1]][j + self.pos_x + self.offset[0]][1] = 'D'
+
             """add block to board_matrix"""
             for i in range(len(self.shape)):
                   for j in range(len(self.shape[i])):
@@ -152,13 +127,20 @@ class Block:
                         if self.shape[i][j] == 0:
                               continue
                         """add block part"""
-                        if block_code == None:
-                              board_matrix[i + self.pos_y + self.offset[1]][j + self.pos_x + self.offset[0]][1] = self.block_code
-                        else:
-                              board_matrix[i + pos_y + self.offset[1]][j + self.pos_x + self.offset[0]][1] = block_code
-            return board_matrix
+                        board_matrix[i + self.pos_y + self.offset[1]][j + self.pos_x + self.offset[0]][1] = self.block_code
 
-      def validate_position(self, board_matrix, wall_kick_offset=[0,0]):
+            return board_matrix
+      
+      def get_telegraph_y_pos(self, board_matrix):
+            for i in range(len(board_matrix)):
+                  decision, _ = self.validate_position(board_matrix, offset=[0,i])
+
+                  if decision is False:
+                        return self.pos_y + i - 1
+
+            raise ValueError("Telegraph not on the board")
+
+      def validate_position(self, board_matrix, offset=[0,0]):
             """check if new position is valid"""
             for i in range(len(self.shape)):
                   for j in range(len(self.shape[i])):
@@ -166,14 +148,14 @@ class Block:
                         if self.shape[i][j] == 0:
                               continue
                         """chekc if piece is inside the board"""
-                        if  0 <= self.pos_y + self.offset[1] + i + wall_kick_offset[1] <= len(board_matrix) - 1 and \
-                              0 <= self.pos_x + self.offset[0] + j + wall_kick_offset[0] <= len(board_matrix[i]) - 1:
+                        if  0 <= self.pos_y + self.offset[1] + i + offset[1] <= len(board_matrix) - 1 and \
+                              0 <= self.pos_x + self.offset[0] + j + offset[0] <= len(board_matrix[i]) - 1:
                               """check for collision"""
-                              if board_matrix[self.pos_y + self.offset[1] + i + wall_kick_offset[1]][self.pos_x + self.offset[0] + j + wall_kick_offset[0]][1] in ['B', 'D']:
+                              if board_matrix[self.pos_y + self.offset[1] + i + offset[1]][self.pos_x + self.offset[0] + j + offset[0]][1] in ['B', 'D']:
                                     continue
-                        return False, wall_kick_offset
+                        return False, offset
             else:
-                  return True, wall_kick_offset
+                  return True, offset
       
       def move(self, board_matrix, direction, reverse=False):
             """move block"""
