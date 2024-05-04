@@ -46,6 +46,7 @@ class Board:
 
     """clear a line if it is completed"""
     def clear_completed_lines(self):
+        amount = 0
         for i in range(self.board_height):
             for j in range(self.board_width):
                 if self.board_matrix[i][j][1] in ['B', 'D']:
@@ -55,6 +56,8 @@ class Board:
                     self.board_matrix[i][j][1] = 'B'
 
                 self.move_lines(i)
+                amount += 1
+        return amount
 
 
     def move_lines(self, height):
