@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 
 import board
-import button
+import GUI
 import block
 
 """init/create variables/objects"""
@@ -30,21 +30,24 @@ if True:
     block_list = block.Block_List(main_board, 5)
 
     """create buttons"""
-    red_button = button.Button(window, 10,10,50,50, (150,0,0), "red")
-    green_button = button.Button(window, 10,70,50,50, (0,150,0), "green")
-    blue_button = button.Button(window, 10,130,50,50, (0,0,150), "blue")
+    red_button = GUI.Button(window, 10,10,50,50, (150,0,0), "red")
+    green_button = GUI.Button(window, 10,70,50,50, (0,150,0), "green")
+    blue_button = GUI.Button(window, 10,130,50,50, (0,0,150), "blue")
 
-    rotate_clockwise_button = button.Button(window, 10,190,50,50, (100,100,100), "<")
-    rotate_counterclockwise_button = button.Button(window, 130,190,50,50, (100,100,100), ">")
+    rotate_clockwise_button = GUI.Button(window, 10,190,50,50, (100,100,100), "<")
+    rotate_counterclockwise_button = GUI.Button(window, 130,190,50,50, (100,100,100), ">")
 
-    drop_button = button.Button(window, 70,190,50,50, (100,100,100), "V")
+    drop_button = GUI.Button(window, 70,190,50,50, (100,100,100), "V")
 
-    left_button = button.Button(window, 10,280,50,50, (100,100,100), "<")
-    right_button = button.Button(window, 130,280,50,50, (100,100,100), ">")
-    up_button = button.Button(window, 70,250,50,50, (100,100,100), "^")
-    down_button = button.Button(window, 70,310,50,50, (100,100,100), "v")
+    left_button = GUI.Button(window, 10,280,50,50, (100,100,100), "<")
+    right_button = GUI.Button(window, 130,280,50,50, (100,100,100), ">")
+    up_button = GUI.Button(window, 70,250,50,50, (100,100,100), "^")
+    down_button = GUI.Button(window, 70,310,50,50, (100,100,100), "v")
 
-    hold_button = button.Button(window, 10,370,50,50, (100,100,100), "v")
+    hold_button = GUI.Button(window, 10,370,50,50, (100,100,100), "v")
+
+    """create text fields"""
+    score_text = GUI.Text_Field(window, 0,500,200,50, (100,100,100), "Score", text_color=(255,255,255))
 
 """draw everything"""
 def draw():
@@ -67,6 +70,8 @@ def draw():
     down_button.draw()
 
     hold_button.draw()
+
+    score_text.draw()
 
     """game board"""
     main_board.draw_board()
@@ -99,13 +104,13 @@ while running:
                     print(e)
 
 
-
     if red_button.pressed():
         active_block = block_list.get_next_block()
         active_block.add_block_to_board_matrix(main_board.board_matrix)
 
     elif green_button.pressed():
-        pass
+        score_text.set_text(f"{score}")
+        score_text.draw()
 
     # print main_board.board_matrix
     elif blue_button.pressed():
@@ -145,6 +150,7 @@ while running:
                 score += 300 * (level + 1)
             elif lines_cleared == 4:
                 score += 1200 * (level + 1)
+            green_button.press()
 
             total_lines_cleared += lines_cleared
             if total_lines_cleared - 10 > level * 10:
