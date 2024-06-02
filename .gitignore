@@ -1,2 +1,3 @@
-/build
-/Tetris.spec
+.build
+.Tetris.spec
+.__pycache__
